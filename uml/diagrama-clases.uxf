@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>8</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>984</x>
+      <y>0</y>
+      <w>80</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>/AbstractClass/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>536</x>
+      <y>288</y>
+      <w>208</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>SistemaGestor
+-
++personas: list[Persona]
++departamentos: list[Departamento]
++asignaturas: list[Asignatura]
+-
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1152</x>
+      <y>512</y>
+      <w>96</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
+ESexo
+-
+VARON
+MUJER
+OTRO</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>536</x>
+      <y>1072</y>
+      <w>280</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>Investigador
+-
++area_de_investigacion: str
+-</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>576</x>
+      <y>688</y>
+      <w>168</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>/Profesor/
+-
++creditos_que_imparte: int
++departamento
+-</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1024</x>
+      <y>296</y>
+      <w>192</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>Departamento
+-
++id: str
++miembros: list[Profesor]
++director: Profesor
+-</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>456</x>
+      <y>872</y>
+      <w>168</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>Asociado
+-
+foo
+-</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>224</x>
+      <y>504</y>
+      <w>272</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>Asignatura
+-
++id: str
++nombre: str
++creditos: int
++cuatrimestre: ETemporizacionAsignatura
+-</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>688</x>
+      <y>872</y>
+      <w>168</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>Titular
+-
+foo
+-</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>712</y>
+      <w>200</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
+ETemporizacionAsignatura
+-
+CUATRI1
+CUATRI2
+ANUAL
+NO_SE_INDICA</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>896</x>
+      <y>696</y>
+      <w>168</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>Estudiante
+-
+foo
+-</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>752</x>
+      <y>488</y>
+      <w>208</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>/Persona/
+-
++nombre: str
++dni: Dni
++direccion: str
++sexo: ESexo
++asignaturas: list[Asignatura]
+-
++get_creditos_en_activo(): int
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
