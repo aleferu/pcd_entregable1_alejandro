@@ -5,7 +5,7 @@ set -xe
 if command -v pytest &> /dev/null; then
     pytest -v .
 elif command -v python3 &> /dev/null; then
-    pytho3 -m pytest -v .
+    python3 -m pytest -v .
 elif command -v python &> /dev/null; then
     python -m pytest -v .
 else
