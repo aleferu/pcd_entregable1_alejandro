@@ -1,2 +1,1 @@
-def hi() -> str:
-    return "¡Hola!"
+from .asignatura import Asignatura, ETemporizacionAsignatura
