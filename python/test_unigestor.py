@@ -1,5 +1,5 @@
 import pytest
-from unigestor.asignatura import *
+from unigestor import *
 
 
 def test_asignatura_inicializada_correctamente():
@@ -22,3 +22,11 @@ def test_asignatura_creditos_incorrectos():
     with pytest.raises(ValueError):
         _ = Asignatura(id, nombre, creditos, temporizacion)
         _ = Asignatura(id, nombre, creditos + 0.5, temporizacion)
+    with pytest.raises(TypeError):
+        _ = Asignatura(id, nombre, creditos + 1.5, temporizacion)
+
+
+def test_departamento_inicializado_correctamente():
+    id_dep = EDEPARTAMENTO_ID.DIIC
+    departamento = Departamento(id_dep)
+    assert departamento.id == id_dep

@@ -18,7 +18,7 @@ class Asignatura:
         if not creditos >= 1:
             raise ValueError(f"Una asignatura debe ser de al menos un crédito. Se ha proporcionado '{creditos}' como valor.")
         if not creditos == int(creditos):
-            raise ValueError(f"Se espera un número entero como valor de créditos de una asignatura. Se ha proporcionado '{creditos}' como valor.")
+            raise TypeError(f"Se espera un número entero como valor de créditos de una asignatura. Se ha proporcionado '{creditos}' como valor.")
         self.id = id
         self.nombre = nombre
         self.creditos = creditos
