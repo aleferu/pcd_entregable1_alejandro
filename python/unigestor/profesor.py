@@ -23,10 +23,10 @@ class Departamento:
         self.director = None
         self.areas = set()
 
-    def anadir_persona(self, profesor: "Profesor") -> None:
+    def anadir_profesor(self, profesor: "Profesor") -> None:
         self.miembros.add(profesor)
 
-    def eliminar_persona(self, profesor: "Profesor") -> None:
+    def eliminar_profesor(self, profesor: "Profesor") -> None:
         self.miembros.remove(profesor)
 
     def establecer_director(self, titular: "Titular") -> None:

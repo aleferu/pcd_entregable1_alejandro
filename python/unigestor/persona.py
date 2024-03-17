@@ -53,7 +53,7 @@ class Estudiante(Persona):
         if asignatura not in self.asignaturas:
             raise ValueError(f"El estudiante no tiene la asignatura que se intenta aprobar. Asignatura: {asignatura.id}.")
         self.quitar_asignatura(asignatura)
-        self.asignaturas_completadas.append(asignatura)
+        self.anadir_asignatura_completada(asignatura)
 
     def creditos_completados(self) -> int:
         return sum([a.creditos for a in self.asignaturas_completadas])

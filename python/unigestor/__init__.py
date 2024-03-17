@@ -22,10 +22,10 @@ class SistemaGestor:
                 raise ValueError("No se puede tener dos apartamentos con el mismo id.")
         self.departamentos.append(Departamento(id))
 
-    def crear_estudiante(self, nombre: str, nif: str, direccion: str, grado: str, ano_entrada: int, sexo: ESexo = ESexo.OTRO, creditos_completados: int = 0) -> None:
+    def crear_estudiante(self, nombre: str, nif: str, direccion: str, grado: str, ano_entrada: int, sexo: ESexo = ESexo.OTRO) -> None:
         # No hay persona con el mismo nif
         self.nif_ya_usado_raises(nif)
-        self.personas.append(Estudiante(nombre, nif, direccion, grado, ano_entrada, sexo, creditos_completados))
+        self.personas.append(Estudiante(nombre, nif, direccion, grado, ano_entrada, sexo))
 
     def crear_asociado(self, nombre: str, nif: str, direccion: str, sexo: ESexo = ESexo.OTRO, otro_trabajo: str = "Desconocido") -> None:
         self.nif_ya_usado_raises(nif)
@@ -44,6 +44,31 @@ class SistemaGestor:
             if asignatura.id == id:
                 raise ValueError("No se puede tener dos asignaturas con el mismo id.")
         self.asignaturas.append(Asignatura(id, nombre, creditos, temporizacion))
+
+    def asignar_profesor_departamento(self, profesor: Profesor, departamento: Departamento) -> None:
+        if profesor not in self.personas or departamento not in self.departamentos:
+            raise ValueError("Solo se puede trabajar con objetos creados por el objeto de UniGestor.")
+        profesor.asignar_departamento(departamento)
+        departamento.anadir_profesor(profesor)
+
+    def asignar_investigador_departamento(self, investigador: Investigador, departamento: Departamento, area: str) -> None:
+        if area not in departamento.areas:
+            raise ValueError(f"El área de investigación {area} no es un área del departamento {departamento.id}.")
+        self.asignar_profesor_departamento(investigador, departamento)
+        investigador.asignar_area_investigacion(area)
+
+    def asignar_director_departamento(self, titular: Titular, departamento: Departamento) -> None:
+        if titular.departamento != departamento:
+            raise ValueError(f"El titular {titular.nif} no está en el departamento {departamento.id}, por lo que no puede ser el director.")
+        departamento.establecer_director(titular)
+
+    def asignar_asignatura_persona(self, asignatura: Asignatura, persona: Persona) -> None:
+        persona.anadir_asignatura(asignatura)
+
+    def asignar_area_investigacion(self, area: str, investigador: Investigador) -> None:
+        if area not in investigador.departamento.areas:
+            pass
+        # TODO: Creo que hay que cambiar como funcionan los departamentos y los profesores para que no haya opcionales.
 
     def nif_ya_usado(self, nif: str) -> bool:
         for persona in self.personas:
