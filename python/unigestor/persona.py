@@ -16,6 +16,7 @@ class Persona(metaclass=ABCMeta):
     direccion: str
     sexo: ESexo
     asignaturas: set[Asignatura]
+    id_asignaturas_completadas: set[int]
 
     def __init__(self, nombre: str, nif: str, direccion: str, sexo: ESexo = ESexo.NO_CONTESTA) -> None:
         self.nombre = nombre
@@ -37,16 +38,22 @@ class Persona(metaclass=ABCMeta):
 class Estudiante(Persona):
     grado: str
     ano_entrada: int
-    creditos_completados: int
+    asignaturas_completadas: list[Asignatura]
 
-    def __init__(self, nombre: str, nif: str, direccion: str, grado: str, ano_entrada: int, sexo: ESexo = ESexo.OTRO, creditos_completados: int = 0) -> None:
+    def __init__(self, nombre: str, nif: str, direccion: str, grado: str, ano_entrada: int, sexo: ESexo = ESexo.OTRO) -> None:
         Persona.__init__(self, nombre, nif, direccion, sexo)  # También se podría utilizar super()
         self.grado = grado
         self.ano_entrada = ano_entrada
-        self.creditos_completados = creditos_completados
+        self.asignaturas_completadas = list()
+
+    def anadir_asignatura_completada(self, asignatura: Asignatura):
+        self.asignaturas_completadas.append(asignatura)
 
     def asignatura_aprobada(self, asignatura: Asignatura) -> None:
         if asignatura not in self.asignaturas:
             raise ValueError(f"El estudiante no tiene la asignatura que se intenta aprobar. Asignatura: {asignatura.id}.")
         self.quitar_asignatura(asignatura)
-        self.creditos_completados += asignatura.creditos
+        self.asignaturas_completadas.append(asignatura)
+
+    def creditos_completados(self) -> int:
+        return sum([a.creditos for a in self.asignaturas_completadas])
