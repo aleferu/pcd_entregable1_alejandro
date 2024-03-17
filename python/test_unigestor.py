@@ -27,6 +27,6 @@ def test_asignatura_creditos_incorrectos():
 
 
 def test_departamento_inicializado_correctamente():
-    id_dep = EDEPARTAMENTO_ID.DIIC
+    id_dep = EDepartamentoId.DIIC
     departamento = Departamento(id_dep)
     assert departamento.id == id_dep

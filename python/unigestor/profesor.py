@@ -5,19 +5,19 @@ from .persona import Persona, ESexo
 from .asignatura import Asignatura
 
 
-class EDEPARTAMENTO_ID(Enum):
+class EDepartamentoId(Enum):
     DIIC = 1
     DITEC = 2
     DIS = 3
 
 
 class Departamento:
-    id: EDEPARTAMENTO_ID
+    id: EDepartamentoId
     miembros: set["Profesor"]
     director: Optional["Profesor"]
     areas: set[str]
 
-    def __init__(self, id: EDEPARTAMENTO_ID) -> None:
+    def __init__(self, id: EDepartamentoId) -> None:
         self.id = id
         self.miembros = set()
         self.director = None
@@ -77,7 +77,7 @@ class Titular(Profesor):
 class Investigador(Titular):
     area_investigacion: str
 
-    def __init__(self, nombre: str, nif: str, direccion: str, area_investigacion, sexo: ESexo = ESexo.OTRO) -> None:
+    def __init__(self, nombre: str, nif: str, direccion: str, sexo: ESexo = ESexo.OTRO, area_investigacion: str = "") -> None:
         Titular.__init__(self, nombre, nif, direccion, sexo)  # También se podría utilizar super()
         self.area_investigacion = area_investigacion
 
