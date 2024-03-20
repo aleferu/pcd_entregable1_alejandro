@@ -27,7 +27,6 @@
 +estudiante_asignatura_aprobada(estudiante: Estudiante, asignatura: Asignatura)
 +creditos_completados_estudiante(estudiante: Estudiante)
 +asociado_titular(asociado: Asociado, area_investigacion: str)
-+titular_investigador(titular: Titular, area_de_investigacion: str)
 +nueva_area_investigacion(departamento: Departamento)
 +get_creditos_en_activo(persona: Persona): int
 +eliminar_asignatura_persona(asignatura: Asignatura, persona: Persona)
