@@ -44,8 +44,6 @@ class SistemaGestor:
         self.asignaturas.append(Asignatura(id, nombre, creditos, temporizacion))
 
     def asignar_profesor_departamento(self, profesor: Profesor, departamento: Departamento, area_investigacion: str = "") -> None:
-        if profesor not in self.personas or departamento not in self.departamentos:
-            raise ValueError("Solo se puede trabajar con objetos creados por el objeto de SistemaGestor.")
         if isinstance(profesor, Titular):
             if area_investigacion != "":
                 SistemaGestor.assert_area_en_departamento(area_investigacion, departamento)
@@ -81,6 +79,40 @@ class SistemaGestor:
         SistemaGestor.assert_area_en_departamento(area_investigacion, asociado.departamento)
         self.personas.remove(asociado)
         self.personas.append(Titular(asociado.nombre, asociado.nif, asociado.direccion, asociado.departamento, asociado.sexo, area_investigacion))
+
+    def nueva_area_investigacion(self, area_investigacion: str, departamento: Departamento):
+        if departamento not in self.departamentos:
+            raise ValueError("No se puede trabajar con objetos creados externamente.")
+        departamento.crear_area_investigacion(area_investigacion)
+
+    def get_creditos_en_activo(self, persona: Persona) -> int:
+        return persona.get_creditos_en_activo()
+
+    def eliminar_asignatura_persona(self, asignatura: Asignatura, persona: Persona) -> None:
+        persona.quitar_asignatura(asignatura)
+
+    def eliminar_asignatura(self, asignatura: Asignatura) -> None:
+        self.asignaturas.remove(asignatura)
+        for persona in self.personas:
+            self.eliminar_asignatura_persona(asignatura, persona)
+
+    def eliminar_area_investigacion(self, area_investigacion: str, departamento: Departamento) -> None:
+        departamento.eliminar_area_investigacion(area_investigacion)
+
+    def eliminar_persona(self, persona: Persona):
+        self.personas.remove(persona)
+
+    def eliminar_departamento(self, departamento: Departamento) -> None:
+        for persona in self.personas:
+            if isinstance(persona, Profesor) and persona.departamento is departamento:
+                raise ValueError("No se puede eliminar un departamento que tiene profesores asociados.")
+        self.departamentos.remove(departamento)
+
+    def cambiar_departamento(self, profesor: Profesor, departamento: Departamento) -> None:
+        old_dep = profesor.departamento
+        old_dep.eliminar_profesor(profesor)
+        profesor.asignar_departamento(departamento)
+        departamento.anadir_profesor(profesor)
 
     @staticmethod
     def assert_area_en_departamento(area: str, departamento: Departamento):
