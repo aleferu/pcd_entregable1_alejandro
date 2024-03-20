@@ -43,11 +43,11 @@ class Departamento:
 
 class Profesor(Persona, metaclass=ABCMeta):
     creditos_maximos: int
-    departamento: Optional[Departamento]
+    departamento: Departamento
 
-    def __init__(self, nombre: str, nif: str, direccion: str, sexo: ESexo = ESexo.OTRO) -> None:
+    def __init__(self, nombre: str, nif: str, direccion: str, departamento: Departamento, sexo: ESexo = ESexo.OTRO) -> None:
         Persona.__init__(self, nombre, nif, direccion, sexo)  # También se podría utilizar super()
-        self.departamento = None
+        self.asignar_departamento(departamento)
 
     def anadir_asignatura(self, asignatura: Asignatura) -> None:
         if self.get_creditos_en_activo() + asignatura.creditos > self.creditos_maximos:
@@ -62,23 +62,17 @@ class Asociado(Profesor):
     creditos_maximos: int = 6
     otro_trabajo: str
 
-    def __init__(self, nombre: str, nif: str, direccion: str, sexo: ESexo = ESexo.OTRO, otro_trabajo: str = "Desconocido") -> None:
-        Profesor.__init__(self, nombre, nif, direccion, sexo)  # También se podría utilizar super()
+    def __init__(self, nombre: str, nif: str, direccion: str, departamento: Departamento, sexo: ESexo = ESexo.OTRO, otro_trabajo: str = "Desconocido") -> None:
+        Profesor.__init__(self, nombre, nif, direccion, departamento, sexo)  # También se podría utilizar super()
         self.otro_trabajo = otro_trabajo
 
 
 class Titular(Profesor):
     creditos_maximos: int = 12
-
-    def __init__(self, nombre: str, nif: str, direccion: str, sexo: ESexo = ESexo.OTRO) -> None:
-        Profesor.__init__(self, nombre, nif, direccion, sexo)  # También se podría utilizar super()
-
-
-class Investigador(Titular):
     area_investigacion: str
 
-    def __init__(self, nombre: str, nif: str, direccion: str, sexo: ESexo = ESexo.OTRO, area_investigacion: str = "") -> None:
-        Titular.__init__(self, nombre, nif, direccion, sexo)  # También se podría utilizar super()
+    def __init__(self, nombre: str, nif: str, direccion: str, departamento: Departamento, sexo: ESexo = ESexo.OTRO, area_investigacion: str = "") -> None:
+        Profesor.__init__(self, nombre, nif, direccion, departamento, sexo)  # También se podría utilizar super()
         self.area_investigacion = area_investigacion
 
     def asignar_area_investigacion(self, area_investigacion: str) -> None:

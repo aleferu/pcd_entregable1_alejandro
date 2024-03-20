@@ -1,6 +1,6 @@
 from .asignatura import Asignatura, ETemporizacionAsignatura
 from .persona import Persona, Estudiante, ESexo
-from .profesor import Departamento, EDepartamentoId, Profesor, Asociado, Titular, Investigador
+from .profesor import Departamento, EDepartamentoId, Profesor, Asociado, Titular
 
 del asignatura, persona, profesor  # Para no poder acceder a los submódulos
 
@@ -27,17 +27,15 @@ class SistemaGestor:
         self.nif_ya_usado_raises(nif)
         self.personas.append(Estudiante(nombre, nif, direccion, grado, ano_entrada, sexo))
 
-    def crear_asociado(self, nombre: str, nif: str, direccion: str, sexo: ESexo = ESexo.OTRO, otro_trabajo: str = "Desconocido") -> None:
+    def crear_asociado(self, nombre: str, nif: str, direccion: str, departamento: Departamento, sexo: ESexo = ESexo.OTRO, otro_trabajo: str = "Desconocido") -> None:
         self.nif_ya_usado_raises(nif)
-        self.personas.append(Asociado(nombre, nif, direccion, sexo, otro_trabajo))
+        self.personas.append(Asociado(nombre, nif, direccion, departamento, sexo, otro_trabajo))
 
-    def crear_titular(self, nombre: str, nif: str, direccion: str, sexo: ESexo = ESexo.OTRO) -> None:
+    def crear_titular(self, nombre: str, nif: str, direccion: str, departamento: Departamento, sexo: ESexo = ESexo.OTRO, area_investigacion: str = "") -> None:
         self.nif_ya_usado_raises(nif)
-        self.personas.append(Titular(nombre, nif, direccion, sexo))
-
-    def crear_investigador(self, nombre: str, nif: str, direccion: str, sexo: ESexo = ESexo.OTRO, area_investigacion: str = "") -> None:
-        self.nif_ya_usado_raises(nif)
-        self.personas.append(Investigador(nombre, nif, direccion, sexo, area_investigacion))
+        if area_investigacion != "":
+            SistemaGestor.assert_area_en_departamento(area_investigacion, departamento)
+        self.personas.append(Titular(nombre, nif, direccion, departamento, sexo, area_investigacion))
 
     def crear_asignatura(self, id: int, nombre: str, creditos: int, temporizacion: ETemporizacionAsignatura) -> None:
         for asignatura in self.asignaturas:
@@ -45,17 +43,15 @@ class SistemaGestor:
                 raise ValueError("No se puede tener dos asignaturas con el mismo id.")
         self.asignaturas.append(Asignatura(id, nombre, creditos, temporizacion))
 
-    def asignar_profesor_departamento(self, profesor: Profesor, departamento: Departamento) -> None:
+    def asignar_profesor_departamento(self, profesor: Profesor, departamento: Departamento, area_investigacion: str = "") -> None:
         if profesor not in self.personas or departamento not in self.departamentos:
-            raise ValueError("Solo se puede trabajar con objetos creados por el objeto de UniGestor.")
+            raise ValueError("Solo se puede trabajar con objetos creados por el objeto de SistemaGestor.")
+        if isinstance(profesor, Titular):
+            if area_investigacion != "":
+                SistemaGestor.assert_area_en_departamento(area_investigacion, departamento)
+            profesor.asignar_area_investigacion(area_investigacion)
         profesor.asignar_departamento(departamento)
         departamento.anadir_profesor(profesor)
-
-    def asignar_investigador_departamento(self, investigador: Investigador, departamento: Departamento, area: str) -> None:
-        if area not in departamento.areas:
-            raise ValueError(f"El área de investigación {area} no es un área del departamento {departamento.id}.")
-        self.asignar_profesor_departamento(investigador, departamento)
-        investigador.asignar_area_investigacion(area)
 
     def asignar_director_departamento(self, titular: Titular, departamento: Departamento) -> None:
         if titular.departamento != departamento:
@@ -65,10 +61,31 @@ class SistemaGestor:
     def asignar_asignatura_persona(self, asignatura: Asignatura, persona: Persona) -> None:
         persona.anadir_asignatura(asignatura)
 
-    def asignar_area_investigacion(self, area: str, investigador: Investigador) -> None:
-        if area not in investigador.departamento.areas:
-            pass
-        # TODO: Creo que hay que cambiar como funcionan los departamentos y los profesores para que no haya opcionales.
+    def asignar_area_investigacion(self, area: str, titular: Titular) -> None:
+        SistemaGestor.assert_area_en_departamento(area, titular.departamento)
+        titular.asignar_area_investigacion(area)
+
+    def estudiante_asignatura_aprobada(self, estudiante: Estudiante, asignatura: Asignatura) -> None:
+        if estudiante not in self.personas or asignatura not in self.asignaturas:
+            raise ValueError("No se puede trabajar con objetos creados externamente.")
+        estudiante.asignatura_aprobada(asignatura)
+
+    def creditos_completados_estudiante(self, estudiante: Estudiante) -> int:
+        if estudiante not in self.personas:
+            raise ValueError("No se puede trabajar con objetos creados externamente.")
+        return estudiante.creditos_completados()
+
+    def asociado_titular(self, asociado: Asociado, area_investigacion: str) -> None:
+        if asociado not in self.personas:
+            raise ValueError("No se puede trabajar con objetos creados externamente.")
+        SistemaGestor.assert_area_en_departamento(area_investigacion, asociado.departamento)
+        self.personas.remove(asociado)
+        self.personas.append(Titular(asociado.nombre, asociado.nif, asociado.direccion, asociado.departamento, asociado.sexo, area_investigacion))
+
+    @staticmethod
+    def assert_area_en_departamento(area: str, departamento: Departamento):
+        if area not in departamento.areas:
+            raise ValueError(f"El área de investigación '{area}' no pertenece al departamento {departamento.id}.")
 
     def nif_ya_usado(self, nif: str) -> bool:
         for persona in self.personas:
