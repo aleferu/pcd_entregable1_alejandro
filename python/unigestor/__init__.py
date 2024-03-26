@@ -64,25 +64,17 @@ class SistemaGestor:
         titular.asignar_area_investigacion(area)
 
     def estudiante_asignatura_aprobada(self, estudiante: Estudiante, asignatura: Asignatura) -> None:
-        if estudiante not in self.personas or asignatura not in self.asignaturas:
-            raise ValueError("No se puede trabajar con objetos creados externamente.")
         estudiante.asignatura_aprobada(asignatura)
 
     def creditos_completados_estudiante(self, estudiante: Estudiante) -> int:
-        if estudiante not in self.personas:
-            raise ValueError("No se puede trabajar con objetos creados externamente.")
         return estudiante.creditos_completados()
 
     def asociado_titular(self, asociado: Asociado, area_investigacion: str) -> None:
-        if asociado not in self.personas:
-            raise ValueError("No se puede trabajar con objetos creados externamente.")
         SistemaGestor.assert_area_en_departamento(area_investigacion, asociado.departamento)
         self.personas.remove(asociado)
         self.personas.append(Titular(asociado.nombre, asociado.nif, asociado.direccion, asociado.departamento, asociado.sexo, area_investigacion))
 
     def nueva_area_investigacion(self, area_investigacion: str, departamento: Departamento):
-        if departamento not in self.departamentos:
-            raise ValueError("No se puede trabajar con objetos creados externamente.")
         departamento.crear_area_investigacion(area_investigacion)
 
     def get_creditos_en_activo(self, persona: Persona) -> int:
