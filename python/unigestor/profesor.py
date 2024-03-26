@@ -13,8 +13,8 @@ class EDepartamentoId(Enum):
 
 class Departamento:
     id: EDepartamentoId
-    miembros: set["Profesor"]
-    director: Optional["Profesor"]
+    miembros: set["MiembroDepartamento"]
+    director: Optional["MiembroDepartamento"]
     areas: set[str]
 
     def __init__(self, id: EDepartamentoId) -> None:
@@ -23,15 +23,15 @@ class Departamento:
         self.director = None
         self.areas = set()
 
-    def anadir_profesor(self, profesor: "Profesor") -> None:
+    def anadir_profesor(self, profesor: "MiembroDepartamento") -> None:
         self.miembros.add(profesor)
 
-    def eliminar_profesor(self, profesor: "Profesor") -> None:
+    def eliminar_profesor(self, profesor: "MiembroDepartamento") -> None:
         self.miembros.remove(profesor)
 
     def establecer_director(self, titular: "Titular") -> None:
-        if not isinstance(titular, Titular):
-            raise TypeError("Un profesor debe de ser titular para poder ejercer de director de departamento.")
+        if titular not in self.miembros:
+            raise ValueError(f"El profesor '{titular.nif}' no es miembro del departamento '{self.id}'.")
         self.director = titular
 
     def crear_area_investigacion(self, area: str) -> None:
@@ -41,21 +41,29 @@ class Departamento:
         self.areas.remove(area)
 
 
-class Profesor(Persona, metaclass=ABCMeta):
+# Esta clase sobra, pero la pide el enunciado
+class MiembroDepartamento(Persona, metaclass=ABCMeta):
+    departamento: Departamento
+
+    def __init__(self, nombre: str, nif: str, direccion: str, departamento: Departamento, sexo: ESexo = ESexo.OTRO) -> None:
+        Persona.__init__(self, nombre, nif, direccion, sexo)
+        self.asignar_departamento(departamento)
+
+    def asignar_departamento(self, departamento: Departamento) -> None:
+        self.departamento = departamento
+
+
+class Profesor(MiembroDepartamento, metaclass=ABCMeta):
     creditos_maximos: int
     departamento: Departamento
 
     def __init__(self, nombre: str, nif: str, direccion: str, departamento: Departamento, sexo: ESexo = ESexo.OTRO) -> None:
-        Persona.__init__(self, nombre, nif, direccion, sexo)  # También se podría utilizar super()
-        self.asignar_departamento(departamento)
+        MiembroDepartamento.__init__(self, nombre, nif, direccion, departamento, sexo)  # También se podría utilizar super()
 
     def anadir_asignatura(self, asignatura: Asignatura) -> None:
         if self.get_creditos_en_activo() + asignatura.creditos > self.creditos_maximos:
             raise ValueError("Se ha intentado asignar una asignatura a un profesor, pero eso sobrepasaría los créditos máximos asociados a su título.")
         Persona.anadir_asignatura(self, asignatura)
-
-    def asignar_departamento(self, departamento: Departamento) -> None:
-        self.departamento = departamento
 
 
 class Asociado(Profesor):
