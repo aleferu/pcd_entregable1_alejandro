@@ -92,6 +92,11 @@ class SistemaGestor:
         departamento.eliminar_area_investigacion(area_investigacion)
 
     def eliminar_persona(self, persona: Persona):
+        if isinstance(persona, Profesor):
+            for departamento in self.departamentos:
+                if departamento.director is persona:
+                    departamento.director = None
+                departamento.eliminar_profesor(persona)
         self.personas.remove(persona)
 
     def eliminar_departamento(self, departamento: Departamento) -> None:
