@@ -19,7 +19,7 @@ class SistemaGestor:
         # No hay apartamento con el mismo id
         for dep in self.departamentos:
             if dep.id == id:
-                raise ValueError("No se puede tener dos apartamentos con el mismo id.")
+                raise ValueError("No se puede tener dos departamentos con el mismo id.")
         self.departamentos.append(Departamento(id))
 
     def crear_estudiante(self, nombre: str, nif: str, direccion: str, grado: str, ano_entrada: int, sexo: ESexo = ESexo.OTRO) -> None:
